@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}내 업체 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .biz-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .biz-row {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .biz-main {
+    font-size: 14px;
+  }
+
+  .biz-main-title {
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .biz-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    margin-right: 4px;
+  }
+
+  .badge-approve {
+    background: #C6F6D5;
+    color: #22543D;
+  }
+
+  .badge-pending {
+    background: #EDF2F7;
+    color: #4A5568;
+  }
+
+  .badge-paid {
+    background: #BEE3F8;
+    color: #2B6CB0;
+  }
+
+  .biz-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .empty {
+    font-size: 14px;
+    color: var(--text-sub);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:20px; color:var(--green-dark);">내가 등록한 업체</h2>
+
+  {% if businesses %}
+  <div class="biz-list">
+    {% for b in businesses %}
+    <div class="biz-row">
+      <div class="biz-main">
+        <div class="biz-main-title">
+          <a href="/business/{{ b.id }}">{{ b.name }}</a>
+        </div>
+        <div class="biz-sub">
+          [{{ "맛집" if b.kind == "food" else "수리" }}] {{ b.category }} ·
+          {{ b.sido }} {{ b.sigungu }} {{ b.dong }}
+        </div>
+        <div class="biz-sub" style="margin-top:4px;">
+          {% if b.approved %}
+            <span class="badge badge-approve">운영자 승인</span>
+          {% else %}
+            <span class="badge badge-pending">승인 대기</span>
+          {% endif %}
+          {% if b.paid %}
+            <span class="badge badge-paid">입점비 결제 완료</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="biz-actions">
+        <a href="/business/{{ b.id }}/edit" class="btn-outline">수정</a>
+        <form action="/business/{{ b.id }}/delete" method="post" style="display:inline;">
+          <button type="submit" class="btn-outline"
+                  onclick="return confirm('정말 삭제하시겠습니까?');">
+            삭제
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="empty">
+      아직 등록한 업체가 없습니다.<br>
+      상단 메뉴의 <strong>‘업체 등록하기’</strong> 버튼을 눌러 첫 업체를 등록해보세요!
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

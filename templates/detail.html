@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}동네생활 - {{ post.title }}{% endblock %}
+
+{% block content %}
+
+<section class="layout layout-detail">
+    <div class="layout-main">
+        <a href="/" class="back-link">← 동네 피드로 돌아가기</a>
+
+        <article class="card post-card">
+            <div class="post-header">
+                <div>
+                    <h1 class="post-title">{{ post.title }}</h1>
+                    <div class="post-meta">
+                        <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        {% if post.author %}
+                            <span>· {{ post.author.username }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <form action="/post/{{ post.id }}/like" method="post">
+                    <button type="submit" class="btn-like">
+                        ❤️ 좋아요
+                        <span class="btn-like-count">{{ post.like_count or 0 }}</span>
+                    </button>
+                </form>
+            </div>
+
+            {% if post.image_path %}
+                <div class="post-image-wrap">
+                    <img src="{{ post.image_path }}" alt="게시글 이미지" class="post-image" />
+                </div>
+            {% endif %}
+
+            <div class="post-content">
+                {{ post.content | replace('\n', '<br>') | safe }}
+            </div>
+        </article>
+
+        <section class="card comment-card">
+            <div class="card-title-row">
+                <h2>💬 댓글</h2>
+                <span class="card-caption">
+                    이 글에 대한 이웃들의 생각을 들어보세요.
+                </span>
+            </div>
+
+            {% if post.comments %}
+                <div class="comment-list">
+                    {% for c in post.comments %}
+                        <div class="comment-item">
+                            <div class="comment-head">
+                                <div class="comment-user">
+                                    <div class="avatar-circle small">
+                                        {% if c.author %}
+                                            {{ c.author.username[0]|upper }}
+                                        {% else %}
+                                            ?
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="comment-name">
+                                            {% if c.author %}
+                                                {{ c.author.username }}
+                                            {% else %}
+                                                익명
+                                            {% endif %}
+                                        </div>
+                                        <div class="comment-date">
+                                            {{ c.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="comment-content">
+                                {{ c.content | replace('\n', '<br>') | safe }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-text">
+                    아직 댓글이 없습니다. 첫 댓글을 남겨보세요.
+                </p>
+            {% endif %}
+
+            <div class="comment-form-wrap">
+                <h3>✏️ 댓글 남기기</h3>
+
+                {% if not user %}
+                    <p class="info-text">
+                        댓글 작성은 <a href="/login">로그인</a> 후 이용 가능합니다.
+                    </p>
+                {% endif %}
+
+                <form action="/post/{{ post.id }}/comment" method="post" class="form-vertical">
+                    <textarea
+                      name="comment_content"
+                      placeholder="이 글을 보고 느낀 점, 추가로 나누고 싶은 동네 이야기를 적어주세요."
+                      required
+                      {% if not user %}disabled{% endif %}
+                    ></textarea>
+                    <button
+                      type="submit"
+                      class="btn-primary"
+                      {% if not user %}disabled{% endif %}
+                    >
+                        댓글 등록
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <aside class="layout-side">
+        <div class="card side-card">
+            <h3>글 정보</h3>
+            <p class="info-text">
+                이 글은 동네 커뮤니티 프로토타입에서 작성된 게시글입니다.
+                실제 서비스 디자인 목업에도 사용 가능하도록 구성되어 있습니다.
+            </p>
+        </div>
+    </aside>
+</section>
+
+{% endblock %}

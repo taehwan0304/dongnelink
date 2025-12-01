@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}동네생활 - 동네링크{% endblock %}
+
+{% block content %}
+<div style="padding: 24px; max-width: 720px; margin: auto;">
+
+  <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 10px;">
+    {{ dong }} 동네생활
+  </h2>
+
+  <p style="color:#666; font-size:14px; margin-bottom:20px;">
+    동네 소식, 공지, 일상 이야기를 자유롭게 나눠보세요!
+  </p>
+
+  <!-- 🔥 글쓰기 버튼 (로그인 상태만 표시) -->
+  {% if user %}
+    <a href="/lifestyle/new?sido={{sido}}&sigungu={{sigungu}}&dong={{dong}}"
+       style="
+         display:inline-block;
+         padding:8px 14px;
+         background:#2F855A;
+         color:white;
+         border-radius:8px;
+         font-size:14px;
+         margin-bottom:22px;
+       ">
+      ✏ 글쓰기
+    </a>
+  {% else %}
+    <p style="font-size:14px; color:#777;">글을 쓰려면 로그인 해주세요.</p>
+  {% endif %}
+
+  <!-- 🔥 게시글 목록 -->
+  {% if posts %}
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      {% for post in posts %}
+        <div style="
+          background:white;
+          padding:16px;
+          border-radius:14px;
+          box-shadow:0 4px 12px rgba(0,0,0,0.06);
+        ">
+          <!-- 제목 -->
+          <div style="font-size:17px; font-weight:700; margin-bottom:6px;">
+            {{ post.title }}
+          </div>
+
+          <!-- 내용 -->
+          <div style="font-size:14px; color:#333; white-space:pre-line; margin-bottom:10px;">
+            {{ post.content }}
+          </div>
+
+          <!-- 🔥 이미지 존재하면 표시 -->
+          {% if post.image_url %}
+            <img src="{{ post.image_url }}" 
+                 style="width:100%; border-radius:12px; margin-top:8px;">
+          {% endif %}
+
+          <!-- 작성자 -->
+          <div style="font-size:12px; color:#777; margin-top:10px;">
+            작성자: {{ post.user }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="
+      background:white;
+      padding:14px;
+      border-radius:12px;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+      color:#666;
+      font-size:14px;
+      text-align:center;
+    ">
+      아직 글이 없습니다. 첫 글을 남겨보세요 🙂
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}동네링크 - 동네 기반 생활 서비스{% endblock %}
+
+{% block extra_head %}
+<style>
+  .hero {
+    margin: 8px 0 16px;
+    padding: 28px 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; }
+  }
+
+  .hero-left {
+    padding: 24px 26px;
+    border-radius: 24px;
+    background: radial-gradient(circle at top left, #ECFDF3 0, #C6F6D5 18%, #F5F7FA 60%);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.08);
+  }
+
+  .hero-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin-bottom: 10px;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-sub);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: #FFFFFF;
+    color: var(--green-dark);
+    border: 1px solid #C6F6D5;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-card {
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+
+  .hero-card strong { color: var(--green-dark); }
+
+  .category-section {
+    margin: 10px 0 10px;
+  }
+
+  .category-label {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .category-card {
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 20px 20px 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #ECFDF3;
+    opacity: 0.6;
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+  }
+
+  .category-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .category-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #F0FFF4;
+    color: var(--green-dark);
+    font-size: 11px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .category-arrow {
+    position: absolute;
+    right: 18px;
+    bottom: 14px;
+    font-size: 18px;
+    color: var(--green-dark);
+    z-index: 1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-title">내 동네가 한 눈에 보이는<br/>동네링크</div>
+    <div class="hero-sub">
+      동네 사람들의 진짜 후기와 정보를 모아<br/>
+      맛집 · 가전수리 · 동네 소식을 한 번에 확인해보세요.
+    </div>
+
+    <div class="hero-pills">
+      <div class="pill">#직접 운영하는 동네 서비스</div>
+      <div class="pill">#소규모 사장님 환영</div>
+      <div class="pill">#우리 동네 소비 정리</div>
+    </div>
+
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="location.href='/select-location?category=food'">
+        우리 동네 맛집 보러가기
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card">
+      <strong>동네 사장님이라면?</strong><br/>
+      우리 가게를 동네링크에 올려두고,<br/>
+      같은 동네 사람들에게 자연스럽게 노출시켜 보세요.
+    </div>
+    <div class="hero-card">
+      <strong>동네 생활자라면?</strong><br/>
+      가까운 곳에서 수리, 음식, 소식까지 한 번에 찾고,<br/>
+      써보고 느낀 솔직한 후기를 남겨둘 수 있어요.
+    </div>
+  </div>
+</section>
+
+<section class="category-section">
+  <div class="category-label">무엇부터 살펴볼까요?</div>
+  <div class="category-grid">
+    <a href="/select-location?category=lifestyle">
+      <div class="category-card">
+        <div class="category-title">동네생활</div>
+        <div class="category-desc">
+          우리 동네 소식, 공지, 이웃 이야기까지<br/>가볍게 나누는 동네 게시판.
+        </div>
+        <div class="category-badge">공지 · 정보 · 이야기</div>
+        <div class="category-arrow">›</div>
+      </div>
+    </a>
+
+    <a href="/select-location?category=food">
+      <div class="category-card">
+        <div class="category-title">동네맛집</div>
+        <div class="category-desc">
+          프랜차이즈 말고, 진짜 동네 주민들이 자주 가는<br/>숨은 맛집을 모아놨어요.
+        </div>
+        <div class="category-badge">후기 기반 추천</div>
+        <div class="category-arrow">›</div>
+      </div>
+    </a>
+
+    <a href="/select-location?category=repair">
+      <div class="category-card">
+        <div class="category-title">가전수리</div>
+        <div class="category-desc">
+          갑자기 고장난 에어컨, 세탁기, 냉장고…<br/>동네에서 바로 와줄 수리점을 찾아보세요.
+        </div>
+        <div class="category-badge">빠른 방문 수리</div>
+        <div class="category-arrow">›</div>
+      </div>
+    </a>
+  </div>
+</section>
+{% endblock %}

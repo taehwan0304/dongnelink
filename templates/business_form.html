@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% block title %}업체 등록 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 18px 0 8px;
+    color: var(--text);
+  }
+  .form-group {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-sub);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .inline-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .option-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 13px;
+  }
+  .option-row label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:18px;">업체 등록</h2>
+  <p class="hint">실제 노출되는 정보이므로, 최대한 정확하게 입력해주세요.</p>
+
+  <form method="post" action="/business/new" enctype="multipart/form-data">
+    <!-- 기본 정보 -->
+    <div class="form-section-title">기본 정보</div>
+    <div class="form-group">
+      <label>업체 종류</label>
+      <select name="kind" required>
+        <option value="food">동네맛집</option>
+        <option value="repair">가전수리</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>카테고리</label>
+      <input type="text" name="category" placeholder="예) 한식, 카페, 에어컨 수리 등" required>
+    </div>
+
+    <div class="form-group">
+      <label>업체명</label>
+      <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+      <label>한 줄 소개</label>
+      <textarea name="description" rows="2" placeholder="간단한 소개 문구를 작성해주세요." required></textarea>
+    </div>
+
+    <!-- 지역/주소 -->
+    <div class="form-section-title">지역 / 주소</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>시/도</label>
+        <select id="sido" name="sido" required>
+          <option value="">선택</option>
+          {% for s in sido_list %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>시/군/구</label>
+        <select id="sigungu" name="sigungu" required>
+          <option value="">선택</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>동</label>
+        <select id="dong" name="dong" required>
+          <option value="">선택</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>도로명 주소</label>
+      <input type="text" name="address_road" placeholder="예) 서울시 강남구 테헤란로 123">
+    </div>
+    <div class="form-group">
+      <label>상세 주소</label>
+      <input type="text" name="address_detail" placeholder="예) 3층 동네링크카페">
+    </div>
+
+    <div class="inline-2">
+      <div class="form-group">
+        <label>위도 (선택)</label>
+        <input type="text" name="lat" placeholder="지도 연동용 (선택)">
+      </div>
+      <div class="form-group">
+        <label>경도 (선택)</label>
+        <input type="text" name="lng" placeholder="지도 연동용 (선택)">
+      </div>
+    </div>
+
+    <!-- 연락처 / 링크 -->
+    <div class="form-section-title">연락처 / 링크</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>전화번호</label>
+        <input type="text" name="phone" placeholder="예) 010-1234-5678">
+      </div>
+      <div class="form-group">
+        <label>홈페이지</label>
+        <input type="text" name="homepage" placeholder="https://">
+      </div>
+    </div>
+
+    <div class="inline-2">
+      <div class="form-group">
+        <label>블로그</label>
+        <input type="text" name="blog" placeholder="https://">
+      </div>
+      <div class="form-group">
+        <label>인스타그램</label>
+        <input type="text" name="instagram" placeholder="https://">
+      </div>
+    </div>
+
+    <!-- 영업 시간 -->
+    <div class="form-section-title">영업 시간</div>
+    <div class="form-group inline-2">
+      <div>
+        <label>월요일</label>
+        <input type="text" name="hours_mon" placeholder="예) 10:00 ~ 21:00">
+      </div>
+      <div>
+        <label>화요일</label>
+        <input type="text" name="hours_tue">
+      </div>
+      <div>
+        <label>수요일</label>
+        <input type="text" name="hours_wed">
+      </div>
+      <div>
+        <label>목요일</label>
+        <input type="text" name="hours_thu">
+      </div>
+      <div>
+        <label>금요일</label>
+        <input type="text" name="hours_fri">
+      </div>
+      <div>
+        <label>토요일</label>
+        <input type="text" name="hours_sat">
+      </div>
+      <div>
+        <label>일요일</label>
+        <input type="text" name="hours_sun">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>정기 휴무일</label>
+      <input type="text" name="off_day" placeholder="예) 매주 일요일, 첫째주 월요일 휴무">
+    </div>
+
+    <!-- 옵션 -->
+    <div class="form-section-title">옵션</div>
+    <div class="option-row">
+      <label><input type="checkbox" name="opt_delivery"> 배달 가능</label>
+      <label><input type="checkbox" name="opt_reservation"> 예약 가능</label>
+      <label><input type="checkbox" name="opt_parking"> 주차 가능</label>
+      <label><input type="checkbox" name="opt_pet"> 반려동물 동반</label>
+      <label><input type="checkbox" name="opt_wifi"> 와이파이</label>
+      <label><input type="checkbox" name="opt_group"> 단체석</label>
+    </div>
+
+    <!-- 메뉴 (맛집일 경우) -->
+    <div class="form-section-title">메뉴 / 가격 (동네맛집)</div>
+    <div class="hint">최대 3개까지 입력 (추후 확장 가능)</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>메뉴 1</label>
+        <input type="text" name="menu_name1" placeholder="예) 아메리카노">
+      </div>
+      <div class="form-group">
+        <label>가격 1</label>
+        <input type="text" name="menu_price1" placeholder="예) 4,500원">
+      </div>
+      <div class="form-group">
+        <label>메뉴 2</label>
+        <input type="text" name="menu_name2">
+      </div>
+      <div class="form-group">
+        <label>가격 2</label>
+        <input type="text" name="menu_price2">
+      </div>
+      <div class="form-group">
+        <label>메뉴 3</label>
+        <input type="text" name="menu_name3">
+      </div>
+      <div class="form-group">
+        <label>가격 3</label>
+        <input type="text" name="menu_price3">
+      </div>
+    </div>
+
+    <!-- 서비스 (수리점일 경우) -->
+    <div class="form-section-title">서비스 항목 (가전수리)</div>
+    <div class="hint">최대 3개까지 입력</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>서비스 1</label>
+        <input type="text" name="service_name1" placeholder="예) 에어컨 청소">
+      </div>
+      <div class="form-group">
+        <label>설명 1</label>
+        <input type="text" name="service_desc1" placeholder="예) 스탠드형/벽걸이 모두 가능">
+      </div>
+      <div class="form-group">
+        <label>비용 1</label>
+        <input type="text" name="service_price1" placeholder="예) 기본 5만원~">
+      </div>
+
+      <div class="form-group">
+        <label>서비스 2</label>
+        <input type="text" name="service_name2">
+      </div>
+      <div class="form-group">
+        <label>설명 2</label>
+        <input type="text" name="service_desc2">
+      </div>
+      <div class="form-group">
+        <label>비용 2</label>
+        <input type="text" name="service_price2">
+      </div>
+
+      <div class="form-group">
+        <label>서비스 3</label>
+        <input type="text" name="service_name3">
+      </div>
+      <div class="form-group">
+        <label>설명 3</label>
+        <input type="text" name="service_desc3">
+      </div>
+      <div class="form-group">
+        <label>비용 3</label>
+        <input type="text" name="service_price3">
+      </div>
+    </div>
+
+    <!-- 이미지 -->
+    <div class="form-section-title">대표 이미지</div>
+    <div class="form-group">
+      <input type="file" name="image" accept="image/*">
+      <p class="hint">가게 전경이나 대표 메뉴 사진 1장을 등록해주세요.</p>
+    </div>
+
+    <div style="margin-top:18px;">
+      <button type="submit" class="btn-primary">업체 등록하기</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // 시도/시군구/동 연동 (기존 select_location에서 쓰던 로직 재활용)
+  const sidoSelect = document.getElementById("sido");
+  const sigunguSelect = document.getElementById("sigungu");
+  const dongSelect = document.getElementById("dong");
+
+  async function fetchJSON(url) {
+    const res = await fetch(url);
+    return await res.json();
+  }
+
+  sidoSelect.addEventListener("change", async () => {
+    const sido = sidoSelect.value;
+    sigunguSelect.innerHTML = '<option value="">선택</option>';
+    dongSelect.innerHTML = '<option value="">선택</option>';
+    if (!sido) return;
+    const data = await fetchJSON(`/api/locations/sigungu?sido=${encodeURIComponent(sido)}`);
+    data.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      sigunguSelect.appendChild(opt);
+    });
+  });
+
+  sigunguSelect.addEventListener("change", async () => {
+    const sido = sidoSelect.value;
+    const sigungu = sigunguSelect.value;
+    dongSelect.innerHTML = '<option value="">선택</option>';
+    if (!sido || !sigungu) return;
+    const data = await fetchJSON(`/api/locations/dong?sido=${encodeURIComponent(sido)}&sigungu=${encodeURIComponent(sigungu)}`);
+    data.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      dongSelect.appendChild(opt);
+    });
+  });
+</script>
+{% endblock %}

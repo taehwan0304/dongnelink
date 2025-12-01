@@ -1,0 +1,32 @@
+{
+  "name": "동네링크",
+  "short_name": "동네링크",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#2F855A",
+  "description": "동네 맛집 · 동네 가전수리 · 생활 정보를 한 곳에서 확인하는 동네 기반 서비스",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "scope": "/",
+  "orientation": "portrait-primary",
+  "id": "dongnelink-pwa"
+}

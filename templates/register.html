@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>회원가입 - 동네링크</title>
+<style>
+  :root {
+    --green: #2F855A;
+    --green-dark: #276749;
+    --bg: #F5F7FA;
+    --card-bg: #FFFFFF;
+    --text-main: #1A202C;
+    --text-sub: #4A5568;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle at top, #ECFDF3 0, #F5F7FA 50%, #E2E8F0 100%);
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--text-main);
+  }
+
+  .nav {
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+
+  .nav-left {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--green-dark);
+    cursor: pointer;
+  }
+
+  .nav-right a {
+    font-size: 14px;
+    color: var(--green-dark);
+    text-decoration: none;
+  }
+
+  .page {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 26px 24px 24px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid #CBD5E0;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(66,153,109,0.25);
+  }
+
+  button {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: var(--green);
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover { background: var(--green-dark); }
+
+  .bottom {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-sub);
+    text-align: center;
+  }
+
+  .bottom a {
+    color: var(--green-dark);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-left" onclick="location.href='/'">
+    동네링크
+  </div>
+  <div class="nav-right">
+    <a href="/auth/login">로그인</a>
+  </div>
+</div>
+
+<div class="page">
+  <div class="card">
+    <div class="title">동네링크 회원가입</div>
+    <div class="subtitle">
+      한 번 가입해두면, 여러 동네에서도 같은 계정으로<br/>맛집·수리·동네소식을 관리할 수 있어요.
+    </div>
+
+    <form method="post" action="/auth/register">
+      <label for="username">아이디</label>
+      <input type="text" id="username" name="username" placeholder="이메일 또는 아이디" required />
+
+      <label for="password">비밀번호</label>
+      <input type="password" id="password" name="password" placeholder="비밀번호" required />
+
+      <label for="password2">비밀번호 확인</label>
+      <input type="password" id="password2" name="password2" placeholder="비밀번호 다시 입력" required />
+
+      <button type="submit">회원가입</button>
+    </form>
+
+    <div class="bottom">
+      이미 계정이 있나요?
+      <a href="/auth/login">로그인 하기</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

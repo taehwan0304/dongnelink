@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}{{ business.name }} - 동네링크{% endblock %}
+
+{% block header %}
+<header class="header">
+  <h1>{{ business.name }}</h1>
+  <p>{{ business.sido }} {{ business.sigungu }} {{ business.dong }} · {{ business.category }}</p>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  {% if business.image_url %}
+    <img src="{{ business.image_url }}" alt="이미지"
+         style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
+  {% endif %}
+
+  <p style="font-size:14px; margin-top:4px;">{{ business.description }}</p>
+
+  <hr style="margin:14px 0; border:none; border-top:1px solid var(--border);">
+
+  <!-- 기본 정보 -->
+  <div style="font-size:13px;">
+    <div><strong>종류</strong> · {{ '동네맛집' if business.kind=='food' else '가전수리' }}</div>
+    {% if business.address_road %}
+      <div style="margin-top:4px;"><strong>주소</strong> · {{ business.address_road }} {{ business.address_detail or '' }}</div>
+    {% endif %}
+    {% if business.phone %}
+      <div style="margin-top:4px;"><strong>전화</strong> · {{ business.phone }}</div>
+    {% endif %}
+  </div>
+
+  <!-- 링크 -->
+  {% if business.homepage or business.blog or business.instagram %}
+  <div style="margin-top:10px; font-size:13px;">
+    {% if business.homepage %}
+      <div>홈페이지 · <a href="{{ business.homepage }}" target="_blank" style="color:var(--primary);">{{ business.homepage }}</a></div>
+    {% endif %}
+    {% if business.blog %}
+      <div>블로그 · <a href="{{ business.blog }}" target="_blank" style="color:var(--primary);">{{ business.blog }}</a></div>
+    {% endif %}
+    {% if business.instagram %}
+      <div>인스타그램 · <a href="{{ business.instagram }}" target="_blank" style="color:var(--primary);">{{ business.instagram }}</a></div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- 영업 시간 -->
+  {% if business.hours_mon or business.hours_tue or business.hours_wed
+        or business.hours_thu or business.hours_fri or business.hours_sat
+        or business.hours_sun or business.off_day %}
+  <div style="margin-top:12px; font-size:13px;">
+    <strong>영업 시간</strong>
+    <div style="margin-top:4px;">
+      {% if business.hours_mon %}<div>월 · {{ business.hours_mon }}</div>{% endif %}
+      {% if business.hours_tue %}<div>화 · {{ business.hours_tue }}</div>{% endif %}
+      {% if business.hours_wed %}<div>수 · {{ business.hours_wed }}</div>{% endif %}
+      {% if business.hours_thu %}<div>목 · {{ business.hours_thu }}</div>{% endif %}
+      {% if business.hours_fri %}<div>금 · {{ business.hours_fri }}</div>{% endif %}
+      {% if business.hours_sat %}<div>토 · {{ business.hours_sat }}</div>{% endif %}
+      {% if business.hours_sun %}<div>일 · {{ business.hours_sun }}</div>{% endif %}
+      {% if business.off_day %}<div style="margin-top:4px;">휴무 · {{ business.off_day }}</div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 옵션 -->
+  {% if business.opt_delivery or business.opt_reservation or business.opt_parking
+        or business.opt_pet or business.opt_wifi or business.opt_group %}
+  <div style="margin-top:12px; font-size:13px;">
+    <strong>편의 정보</strong>
+    <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px;">
+      {% if business.opt_delivery %}<span>• 배달 가능</span>{% endif %}
+      {% if business.opt_reservation %}<span>• 예약 가능</span>{% endif %}
+      {% if business.opt_parking %}<span>• 주차 가능</span>{% endif %}
+      {% if business.opt_pet %}<span>• 반려동물 동반</span>{% endif %}
+      {% if business.opt_wifi %}<span>• 와이파이</span>{% endif %}
+      {% if business.opt_group %}<span>• 단체석</span>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 메뉴 -->
+  {% if business.menus and business.kind == 'food' %}
+  <div style="margin-top:14px; font-size:13px;">
+    <strong>대표 메뉴</strong>
+    <div style="margin-top:4px;">
+      {% for m in business.menus %}
+        <div style="display:flex; justify-content:space-between;">
+          <span>{{ m.name if m.name is defined else m["name"] }}</span>
+          <span>{{ m.price if m.price is defined else m["price"] }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 서비스 -->
+  {% if business.services and business.kind == 'repair' %}
+  <div style="margin-top:14px; font-size:13px;">
+    <strong>서비스 항목</strong>
+    <div style="margin-top:4px;">
+      {% for s in business.services %}
+        <div style="margin-bottom:4px;">
+          <div><strong>{{ s.name if s.name is defined else s["name"] }}</strong> · {{ s.price if s.price is defined else s["price"] }}</div>
+          {% if s.desc or s["desc"] %}
+            <div style="color:var(--text-sub);">{{ s.desc if s.desc is defined else s["desc"] }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 주인 & 결제 상태 -->
+  <div style="margin-top:12px; font-size:12px; color:var(--text-sub);">
+    등록자: {{ business.owner }}<br>
+    승인 상태: {{ '노출중' if business.approved else '승인 대기' }} /
+    입점비 결제: {{ '완료' if business.paid else '미결제' }}
+  </div>
+
+  {% if user and (user == business.owner or user == '""" + ADMIN_USERNAME + """') %}
+  <div style="margin-top:14px; display:flex; gap:8px;">
+    <a href="/business/{{ business.id }}/edit" class="btn-outline">정보 수정</a>
+    <form method="post" action="/business/{{ business.id }}/delete" onsubmit="return confirm('정말 삭제할까요?');">
+      <button type="submit" class="btn-outline">삭제</button>
+    </form>
+    {% if not business.paid %}
+    <form method="post" action="/business/{{ business.id }}/pay-entry">
+      <button type="submit" class="btn-primary">입점비 결제 처리(모의)</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- 리뷰 카드 -->
+<div class="card">
+  <h2 style="margin-top:0; font-size:18px;">리뷰</h2>
+
+  {% if avg_rating %}
+    <p style="font-size:14px; margin:4px 0 8px;">
+      ⭐ 평균 {{ "%.1f"|format(avg_rating) }}점 ({{ review_count }}개)
+    </p>
+  {% endif %}
+
+  {% if reviews %}
+    {% for r in reviews %}
+      <div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;">
+        <div>⭐ {{ r.rating }}점 · {{ r.username }}</div>
+        <div style="margin-top:4px;">{{ r.comment }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="font-size:13px; color:var(--text-sub);">아직 등록된 리뷰가 없습니다.</p>
+  {% endif %}
+
+  {% if user %}
+  <form method="post" action="/business/{{ business.id }}/review" style="margin-top:12px;">
+    <div class="form-group">
+      <label style="font-size:13px;">평점 (1~5)</label>
+      <input type="number" name="rating" min="1" max="5" value="5">
+    </div>
+    <div class="form-group">
+      <label style="font-size:13px;">코멘트</label>
+      <textarea name="comment" rows="3" style="width:100%;"></textarea>
+    </div>
+    <button type="submit" class="btn-primary">리뷰 남기기</button>
+  </form>
+  {% else %}
+  <p style="margin-top:10px; font-size:13px; color:var(--text-sub);">
+    리뷰를 작성하려면 <a href="/auth/login" style="color:var(--primary);">로그인</a>이 필요합니다.
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

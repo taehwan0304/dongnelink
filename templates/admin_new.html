@@ -1,0 +1,60 @@
+<!-- templates/admin_new.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <h1>업체 등록 (임시 관리자 페이지)</h1>
+  <form action="/admin/providers/new" method="post" class="form">
+    <label>
+      업체명
+      <input type="text" name="name" required class="input" />
+    </label>
+
+    <label>
+      카테고리
+      <select name="category" required class="input">
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      지역 (예: 수원 영통, 서울 강서구)
+      <input type="text" name="region" required class="input" />
+    </label>
+
+    <label>
+      예상 최저 가격
+      <input type="number" name="price_min" step="1000" class="input" />
+    </label>
+
+    <label>
+      예상 최고 가격
+      <input type="number" name="price_max" step="1000" class="input" />
+    </label>
+
+    <label>
+      업체 설명
+      <textarea name="description" rows="4" class="input"></textarea>
+    </label>
+
+    <label>
+      전화번호
+      <input type="text" name="phone" class="input" />
+    </label>
+
+    <label>
+      주소
+      <input type="text" name="address" class="input" />
+    </label>
+
+    <label class="checkbox-row">
+      <input type="checkbox" name="is_premium" value="true" />
+      프리미엄 상단 노출
+    </label>
+
+    <button type="submit" class="btn-primary">등록하기</button>
+  </form>
+</section>
+{% endblock %}

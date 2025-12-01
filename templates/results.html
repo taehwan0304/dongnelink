@@ -1,0 +1,38 @@
+<!-- templates/results.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <h1>검색 결과</h1>
+  <p class="section-sub">
+    지역: <strong>{{ region or '전체' }}</strong> /
+    카테고리: <strong>{{ category or '전체' }}</strong>
+  </p>
+
+  {% if providers %}
+  <div class="card-grid">
+    {% for p in providers %}
+    <a href="/providers/{{ p.id }}" class="card">
+      <div class="card-header">
+        <h3>{{ p.name }}</h3>
+        {% if p.is_premium %}
+        <span class="badge">프리미엄</span>
+        {% endif %}
+      </div>
+      <p class="card-category">{{ p.category }} · {{ p.region }}</p>
+      {% if p.price_min and p.price_max %}
+      <p class="card-price">
+        대략 {{ '{:,.0f}'.format(p.price_min) }}원 ~ {{ '{:,.0f}'.format(p.price_max) }}원
+      </p>
+      {% else %}
+      <p class="card-price">가격 정보 미등록</p>
+      {% endif %}
+      <p class="card-desc">{{ p.description or '가전 수리 전문 업체입니다.' }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>조건에 맞는 업체가 없습니다. 지역/카테고리를 바꿔보세요.</p>
+  {% endif %}
+</section>
+{% endblock %}

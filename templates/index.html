@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}동네링크 메인{% endblock %}
+
+{% block header %}
+<header class="header">
+  <h1>동네링크</h1>
+  <p>동네 기반 가전수리 · 맛집 · 소식을 한 번에</p>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="home-grid">
+  <a href="/repair" class="card card-hover">
+    <h2 class="home-card-title">가전수리</h2>
+    <p class="home-card-text">
+      에어컨, TV, 세탁기 등 우리 동네에서 믿고 맡길 수 있는 수리점을 찾아보세요.
+    </p>
+  </a>
+
+  <a href="/food" class="card card-hover">
+    <h2 class="home-card-title">동네 맛집</h2>
+    <p class="home-card-text">
+      한식, 양식, 중식, 일식, 카페까지 이웃들이 추천하는 진짜 맛집을 모았어요.
+    </p>
+  </a>
+
+  <a href="/news" class="card card-hover">
+    <h2 class="home-card-title">동네 소식</h2>
+    <p class="home-card-text">
+      분실물, 나눔, 동네 행사 소식을 공유하고 이웃들과 소통해보세요.
+    </p>
+  </a>
+</div>
+{% endblock %}

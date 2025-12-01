@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}동네소식 | 동네링크{% endblock %}
+
+{% block header %}
+<header class="header">
+  <h1>동네소식</h1>
+  <p>이웃들이 올린 동네 공지 · 정보 모음</p>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:18px;">소식 목록</h2>
+
+  {% if posts %}
+    <div style="margin-top:10px;">
+      {% for p in posts %}
+        <div style="padding:8px 0; border-bottom:1px solid var(--border);">
+          <div style="font-weight:600; font-size:15px;">{{ p.title }}</div>
+          <div style="font-size:12px; color:var(--text-sub); margin-top:2px;">
+            {{ p.sido }} {{ p.sigungu }} {{ p.dong }} · {{ p.author }}
+          </div>
+          <div style="font-size:13px; margin-top:4px;">
+            {{ p.content }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="margin-top:10px; font-size:14px; color:var(--text-sub);">
+      아직 등록된 동네 소식이 없습니다.
+    </p>
+  {% endif %}
+</div>
+
+{% if user %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:18px;">새 소식 올리기</h2>
+  <form method="post" action="/news/new" style="display:grid; gap:8px; margin-top:10px;">
+    <div>
+      <label>시/도</label>
+      <input type="text" name="sido" placeholder="예: 서울특별시" required>
+    </div>
+    <div>
+      <label>시/군/구</label>
+      <input type="text" name="sigungu" placeholder="예: 강남구" required>
+    </div>
+    <div>
+      <label>동</label>
+      <input type="text" name="dong" placeholder="예: 역삼동" required>
+    </div>
+    <div>
+      <label>제목</label>
+      <input type="text" name="title" required>
+    </div>
+    <div>
+      <label>내용</label><br>
+      <textarea name="content" rows="3" style="width:100%;" required></textarea>
+    </div>
+    <button class="btn-primary" type="submit">등록하기</button>
+  </form>
+</div>
+{% else %}
+<div class="card">
+  <p style="margin:0; font-size:13px; color:var(--text-sub);">
+    동네 소식을 등록하려면 <a href="/auth/login" style="color:var(--primary);">로그인</a>이 필요합니다.
+  </p>
+</div>
+{% endif %}
+{% endblock %}

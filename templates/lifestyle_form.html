@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}동네생활 글쓰기{% endblock %}
+
+{% block content %}
+<div style="padding:24px; max-width:600px; margin:auto;">
+
+  <h2 style="font-size:22px; font-weight:700; margin-bottom:20px;">
+    동네생활 글쓰기
+  </h2>
+
+  <form method="post" action="/lifestyle/new" enctype="multipart/form-data">
+    <input type="hidden" name="sido" value="{{sido}}">
+    <input type="hidden" name="sigungu" value="{{sigungu}}">
+    <input type="hidden" name="dong" value="{{dong}}">
+
+    <label>제목</label>
+    <input name="title" required
+      style="width:100%; padding:10px; margin:6px 0 14px; border:1px solid #ccc; border-radius:8px;">
+
+    <label>내용</label>
+    <textarea name="content" rows="8" required
+      style="width:100%; padding:10px; margin-top:6px; border:1px solid #ccc; border-radius:8px;"></textarea>
+
+    <label>사진 첨부 (선택)</label><br>
+    <input type="file" name="image" accept="image/*"
+      style="margin:10px 0 20px;">
+
+    <button type="submit"
+      style="padding:10px 18px; background:#2F855A; color:white; border:none; border-radius:8px; cursor:pointer;">
+      등록하기
+    </button>
+  </form>
+
+</div>
+{% endblock %}

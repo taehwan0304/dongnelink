@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}운영자 대시보드 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .summary {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .summary-card {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  }
+
+  .summary-card .label {
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+
+  .summary-card .value {
+    margin-top: 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  h2 {
+    font-size: 17px;
+    margin: 26px 0 10px;
+    color: var(--green-dark);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  th {
+    background: #F0FFF4;
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .empty {
+    padding: 12px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+
+  .pending-link {
+    font-size: 13px;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="font-size:22px; margin-top:0; color:var(--green-dark);">
+  운영자 대시보드
+</h1>
+
+<div class="summary">
+  <div class="summary-card">
+    <div class="label">가입 회원 수</div>
+    <div class="value">{{ users|length }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">등록된 업체 수</div>
+    <div class="value">{{ businesses|length }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">동네생활 글 수</div>
+    <div class="value">{{ news_posts|length }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">작성된 리뷰 수</div>
+    <div class="value">{{ reviews|length }}</div>
+  </div>
+</div>
+
+<div class="pending-link">
+  👉 <a href="/admin/businesses/pending" style="color:var(--green-dark); font-weight:600;">
+    승인 대기 업체 보러가기
+  </a>
+</div>
+
+<h2>회원 목록</h2>
+{% if users %}
+<table>
+  <thead>
+    <tr>
+      <th>아이디</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr><td>{{ u.username if u.username is defined else u["username"] }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">가입한 회원이 없습니다.</div>
+{% endif %}
+
+<h2>등록된 업체</h2>
+{% if businesses %}
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>종류</th>
+      <th>업체명</th>
+      <th>카테고리</th>
+      <th>지역</th>
+      <th>등록자</th>
+      <th>승인</th>
+      <th>결제</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in businesses %}
+    <tr>
+      <td>{{ b.id if b.id is defined else b["id"] }}</td>
+      <td>{{ "맛집" if (b.kind if b.kind is defined else b["kind"]) == "food" else "수리" }}</td>
+      <td>{{ b.name if b.name is defined else b["name"] }}</td>
+      <td>{{ b.category if b.category is defined else b["category"] }}</td>
+      <td>
+        {{ b.sido if b.sido is defined else b["sido"] }}
+        {{ b.sigungu if b.sigungu is defined else b["sigungu"] }}
+        {{ b.dong if b.dong is defined else b["dong"] }}
+      </td>
+      <td>{{ b.owner if b.owner is defined else b["owner"] }}</td>
+      <td>{{ "승인" if (b.approved if b.approved is defined else b["approved"]) else "대기" }}</td>
+      <td>{{ "결제완료" if (b.paid if b.paid is defined else b["paid"]) else "-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">등록된 업체가 없습니다.</div>
+{% endif %}
+
+<h2>리뷰</h2>
+{% if reviews %}
+<table>
+  <thead>
+    <tr>
+      <th>업체 ID</th>
+      <th>작성자</th>
+      <th>평점</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reviews %}
+    <tr>
+      <td>{{ r.business_id if r.business_id is defined else r["business_id"] }}</td>
+      <td>{{ r.username if r.username is defined else r["username"] }}</td>
+      <td>{{ r.rating if r.rating is defined else r["rating"] }}</td>
+      <td>{{ r.comment if r.comment is defined else r["comment"] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">작성된 리뷰가 없습니다.</div>
+{% endif %}
+{% endblock %}

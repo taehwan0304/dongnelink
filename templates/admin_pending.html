@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}승인 대기 업체 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pending-item {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    font-size: 13px;
+  }
+
+  .pending-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .pending-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 3px;
+  }
+
+  .pending-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:20px; color:var(--green-dark);">
+    승인 대기 중인 업체
+  </h2>
+
+  {% if businesses %}
+  <div class="pending-list">
+    {% for b in businesses %}
+    <div class="pending-item">
+      <div class="pending-title">{{ b.name }} ({{ "맛집" if b.kind == "food" else "수리" }})</div>
+      <div class="pending-sub">
+        {{ b.sido }} {{ b.sigungu }} {{ b.dong }} · {{ b.category }} · 등록자: {{ b.owner }}
+      </div>
+      <div class="pending-actions">
+        <form action="/admin/businesses/{{ b.id }}/approve" method="post">
+          <button type="submit" class="btn-primary">승인</button>
+        </form>
+        <form action="/admin/businesses/{{ b.id }}/reject" method="post">
+          <button type="submit" class="btn-outline"
+                  onclick="return confirm('이 업체를 삭제(반려)하시겠습니까?');">
+            삭제(반려)
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p style="font-size:14px; color:var(--text-sub); margin-top:8px;">
+      승인 대기 중인 업체가 없습니다.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

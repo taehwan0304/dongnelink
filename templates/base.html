@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}동네링크{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA 설정 -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#2F855A">
+
+  <!-- iOS 지원 -->
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <style>
+    :root {
+      --green: #2F855A;
+      --green-dark: #276749;
+      --bg: #F5F7FA;
+      --card-bg: #FFFFFF;
+      --text-main: #1A202C;
+      --text-sub: #4A5568;
+      --border: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--text-main);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .nav {
+      width: 100%;
+      height: 60px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .nav-left {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--green-dark);
+      cursor: pointer;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .username {
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      color: var(--green-dark);
+    }
+
+    .nav-link:hover {
+      border-color: var(--green);
+      background: #F0FFF4;
+    }
+
+    .nav-btn {
+      font-size: 13px;
+      padding: 6px 12px;
+      background: var(--green);
+      border-radius: 999px;
+      color: white;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--green-dark);
+    }
+
+    .main {
+      max-width: 1040px;
+      margin: 24px auto 40px;
+      padding: 0 20px 40px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: var(--green-dark); }
+
+    .btn-outline {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--green);
+      background: transparent;
+      color: var(--green-dark);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      background: var(--green);
+      color: #fff;
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+  <div class="nav">
+    <div class="nav-left" onclick="location.href='/'">동네링크</div>
+
+    <div class="nav-right">
+      {% if user %}
+        <span class="username">{{ user }}님</span>
+
+        <a href="/my/businesses" class="nav-link">내 업체</a>
+        <a href="/business/register" class="nav-link">업체 등록하기</a>
+
+        {% if request.cookies.get('is_admin') == '1' %}
+          <a href="/admin" class="nav-link">운영자 대시보드</a>
+        {% endif %}
+
+        <a href="/auth/logout" class="nav-btn">로그아웃</a>
+      {% else %}
+        <a href="/auth/login" class="nav-btn">로그인</a>
+        <a href="/auth/register" class="nav-btn">회원가입</a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% block header %}{% endblock %}
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- PWA Service Worker 등록 -->
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/service-worker.js")
+      .then(() => console.log("SW registered"))
+      .catch(err => console.error("SW failed:", err));
+  }
+  </script>
+
+</body>
+</html>

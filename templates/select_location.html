@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>지역 선택 - 동네링크</title>
+
+<style>
+  :root {
+    --green: #2F855A;
+    --green-dark: #276749;
+    --bg: #F5F7FA;
+    --card-bg: #FFFFFF;
+    --text-main: #1A202C;
+    --text-sub: #4A5568;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--text-main);
+  }
+
+  /* NAV */
+  .nav {
+    width: 100%;
+    height: 60px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .nav-left {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--green-dark);
+    cursor: pointer;
+  }
+
+  .nav-right {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .username {
+    font-size: 14px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .nav-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+    background: var(--green);
+    border-radius: 999px;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .nav-btn:hover { background: var(--green-dark); }
+
+  .page {
+    max-width: 560px;
+    margin: 32px auto 60px;
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 22px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 22px 20px 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: var(--green-dark);
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #CBD5E0;
+    font-size: 14px;
+    margin-bottom: 16px;
+    background: #FFFFFF;
+    color: var(--text-main);
+  }
+
+  select:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(66, 153, 109, 0.2);
+  }
+
+  button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: var(--green);
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: var(--green-dark);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #ECFDF3;
+    color: var(--green-dark);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-left" onclick="location.href='/'">
+    동네링크
+  </div>
+  <div class="nav-right">
+    {% if user %}
+      <span class="username">{{ user }}님</span>
+      <a href="/auth/logout" class="nav-btn">로그아웃</a>
+    {% else %}
+      <a href="/auth/login" class="nav-btn">로그인</a>
+      <a href="/auth/register" class="nav-btn">회원가입</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="page">
+  <div class="title">{{ category_name }} 볼 지역을 선택해주세요</div>
+  <div class="subtitle">
+    지금 보고 싶은 동네를 선택하면, 해당 지역의 {{ category_name }} 정보만 모아서 보여드려요.
+  </div>
+
+  <div class="card">
+    <div class="chip">STEP 1 · 지역 선택</div>
+
+    <form action="/{{ category }}" method="get">
+
+      <div style="margin-bottom: 12px;">
+        <label for="sido">시/도</label>
+        <select name="sido" id="sido">
+          <option value="">시/도를 선택해주세요</option>
+          {% for s in sido_list %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label for="sigungu">시/군/구</label>
+        <select name="sigungu" id="sigungu">
+          <option value="">먼저 시/도를 선택해주세요</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 4px;">
+        <label for="dong">동</label>
+        <select name="dong" id="dong">
+          <option value="">먼저 시/군/구를 선택해주세요</option>
+        </select>
+      </div>
+
+      <button type="submit">이 지역 {{ category_name }} 보러가기</button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById("sido").addEventListener("change", async function(){
+  const sido = this.value;
+  const sigungu = document.getElementById("sigungu");
+  const dong = document.getElementById("dong");
+
+  sigungu.innerHTML = "<option value=''>시/군/구 선택</option>";
+  dong.innerHTML = "<option value=''>동 선택</option>";
+
+  if (!sido) return;
+
+  const res = await fetch(`/api/locations/sigungu?sido=${encodeURIComponent(sido)}`);
+  const data = await res.json();
+
+  data.forEach(g => {
+    sigungu.innerHTML += `<option value="${g}">${g}</option>`;
+  });
+});
+
+document.getElementById("sigungu").addEventListener("change", async function(){
+  const sido = document.getElementById("sido").value;
+  const sigungu = this.value;
+  const dong = document.getElementById("dong");
+
+  dong.innerHTML = "<option value=''>동 선택</option>";
+
+  if (!sigungu) return;
+
+  const res = await fetch(`/api/locations/dong?sido=${encodeURIComponent(sido)}&sigungu=${encodeURIComponent(sigungu)}`);
+  const data = await res.json();
+
+  data.forEach(d => {
+    dong.innerHTML += `<option value="${d}">${d}</option>`;
+  });
+});
+</script>
+
+</body>
+</html>

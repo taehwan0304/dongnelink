@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}가전수리 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--green-dark);
+  }
+
+  .location {
+    font-size: 14px;
+    color: var(--text-sub);
+    margin-bottom: 16px;
+  }
+
+  .top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .card-biz {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    transition: 0.2s;
+    cursor: pointer;
+  }
+
+  .card-biz:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+  }
+
+  .thumb {
+    width: 100%;
+    height: 180px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 12px;
+  }
+
+  .biz-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+  }
+
+  .biz-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .biz-tag {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #ECFDF3;
+    color: var(--green-dark);
+    font-size: 11px;
+    border-radius: 999px;
+  }
+
+  .empty-text {
+    font-size: 14px;
+    color: var(--text-sub);
+    margin-top: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+  <div class="page-title">가전수리 / 동네 수리</div>
+  <div class="location">{{ sido }} {{ sigungu }} {{ dong }}</div>
+
+  <div class="top-actions">
+    <div style="font-size:13px; color:var(--text-sub);">
+      이 지역에 등록된 수리점 수: {{ items|length }}곳
+    </div>
+    <button class="btn-outline" onclick="location.href='/business/register'">
+      이 동네 수리점 등록하기
+    </button>
+  </div>
+
+  {% if items %}
+  <div class="grid">
+    {% for item in items %}
+    <a href="/business/{{ item.id }}">
+      <div class="card-biz">
+        <div class="thumb"
+             style="background-image:url('{{ item.image_url if item.image_url else "/static/default_repair.jpg" }}');">
+        </div>
+        <div class="biz-name">{{ item.name }}</div>
+        <div class="biz-desc">{{ item.description }}</div>
+        <div class="biz-tag">{{ item.category }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="empty-text">
+      아직 등록된 수리점이 없습니다. 첫 번째로 <strong>우리 업체</strong>를 올려보세요!
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

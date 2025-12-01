@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% block title %}업체 정보 수정 - 동네링크{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 18px 0 8px;
+    color: var(--text);
+  }
+  .form-group {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-sub);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .inline-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .option-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 13px;
+  }
+  .option-row label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0; font-size:18px;">업체 정보 수정</h2>
+
+  <form method="post" action="/business/{{ business.id }}/edit" enctype="multipart/form-data">
+
+    <div class="form-section-title">기본 정보</div>
+    <div class="form-group">
+      <label>업체 종류</label>
+      <select name="kind" required>
+        <option value="food" {% if business.kind == 'food' %}selected{% endif %}>동네맛집</option>
+        <option value="repair" {% if business.kind == 'repair' %}selected{% endif %}>가전수리</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>카테고리</label>
+      <input type="text" name="category" value="{{ business.category }}">
+    </div>
+
+    <div class="form-group">
+      <label>업체명</label>
+      <input type="text" name="name" value="{{ business.name }}">
+    </div>
+
+    <div class="form-group">
+      <label>한 줄 소개</label>
+      <textarea name="description" rows="2">{{ business.description }}</textarea>
+    </div>
+
+    <!-- 지역/주소 -->
+    <div class="form-section-title">지역 / 주소</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>시/도</label>
+        <select id="sido" name="sido" required>
+          <option value="">선택</option>
+          {% for s in sido_list %}
+          <option value="{{ s }}" {% if s == business.sido %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>시/군/구</label>
+        <select id="sigungu" name="sigungu" required>
+          <option value="{{ business.sigungu }}">{{ business.sigungu }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>동</label>
+        <select id="dong" name="dong" required>
+          <option value="{{ business.dong }}">{{ business.dong }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>도로명 주소</label>
+      <input type="text" name="address_road" value="{{ business.address_road or '' }}">
+    </div>
+    <div class="form-group">
+      <label>상세 주소</label>
+      <input type="text" name="address_detail" value="{{ business.address_detail or '' }}">
+    </div>
+
+    <div class="inline-2">
+      <div class="form-group">
+        <label>위도</label>
+        <input type="text" name="lat" value="{{ business.lat or '' }}">
+      </div>
+      <div class="form-group">
+        <label>경도</label>
+        <input type="text" name="lng" value="{{ business.lng or '' }}">
+      </div>
+    </div>
+
+    <!-- 연락처 / 링크 -->
+    <div class="form-section-title">연락처 / 링크</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>전화번호</label>
+        <input type="text" name="phone" value="{{ business.phone or '' }}">
+      </div>
+      <div class="form-group">
+        <label>홈페이지</label>
+        <input type="text" name="homepage" value="{{ business.homepage or '' }}">
+      </div>
+    </div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>블로그</label>
+        <input type="text" name="blog" value="{{ business.blog or '' }}">
+      </div>
+      <div class="form-group">
+        <label>인스타그램</label>
+        <input type="text" name="instagram" value="{{ business.instagram or '' }}">
+      </div>
+    </div>
+
+    <!-- 영업시간 -->
+    <div class="form-section-title">영업 시간</div>
+    <div class="form-group inline-2">
+      <div>
+        <label>월요일</label>
+        <input type="text" name="hours_mon" value="{{ business.hours_mon or '' }}">
+      </div>
+      <div>
+        <label>화요일</label>
+        <input type="text" name="hours_tue" value="{{ business.hours_tue or '' }}">
+      </div>
+      <div>
+        <label>수요일</label>
+        <input type="text" name="hours_wed" value="{{ business.hours_wed or '' }}">
+      </div>
+      <div>
+        <label>목요일</label>
+        <input type="text" name="hours_thu" value="{{ business.hours_thu or '' }}">
+      </div>
+      <div>
+        <label>금요일</label>
+        <input type="text" name="hours_fri" value="{{ business.hours_fri or '' }}">
+      </div>
+      <div>
+        <label>토요일</label>
+        <input type="text" name="hours_sat" value="{{ business.hours_sat or '' }}">
+      </div>
+      <div>
+        <label>일요일</label>
+        <input type="text" name="hours_sun" value="{{ business.hours_sun or '' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>정기 휴무일</label>
+      <input type="text" name="off_day" value="{{ business.off_day or '' }}">
+    </div>
+
+    <!-- 옵션 -->
+    <div class="form-section-title">옵션</div>
+    <div class="option-row">
+      <label><input type="checkbox" name="opt_delivery" {% if business.opt_delivery %}checked{% endif %}> 배달 가능</label>
+      <label><input type="checkbox" name="opt_reservation" {% if business.opt_reservation %}checked{% endif %}> 예약 가능</label>
+      <label><input type="checkbox" name="opt_parking" {% if business.opt_parking %}checked{% endif %}> 주차 가능</label>
+      <label><input type="checkbox" name="opt_pet" {% if business.opt_pet %}checked{% endif %}> 반려동물</label>
+      <label><input type="checkbox" name="opt_wifi" {% if business.opt_wifi %}checked{% endif %}> 와이파이</label>
+      <label><input type="checkbox" name="opt_group" {% if business.opt_group %}checked{% endif %}> 단체석</label>
+    </div>
+
+    <!-- 메뉴/서비스는 새로 입력하는 방식 (기존 값은 상세 페이지에서만 표시) -->
+    <div class="form-section-title">메뉴 / 가격 (동네맛집)</div>
+    <div class="hint">필요하면 새로 입력해주세요. (최대 3개)</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>메뉴 1</label>
+        <input type="text" name="menu_name1">
+      </div>
+      <div class="form-group">
+        <label>가격 1</label>
+        <input type="text" name="menu_price1">
+      </div>
+      <div class="form-group">
+        <label>메뉴 2</label>
+        <input type="text" name="menu_name2">
+      </div>
+      <div class="form-group">
+        <label>가격 2</label>
+        <input type="text" name="menu_price2">
+      </div>
+      <div class="form-group">
+        <label>메뉴 3</label>
+        <input type="text" name="menu_name3">
+      </div>
+      <div class="form-group">
+        <label>가격 3</label>
+        <input type="text" name="menu_price3">
+      </div>
+    </div>
+
+    <div class="form-section-title">서비스 항목 (가전수리)</div>
+    <div class="hint">필요 시 새로 입력</div>
+    <div class="inline-2">
+      <div class="form-group">
+        <label>서비스 1</label>
+        <input type="text" name="service_name1">
+      </div>
+      <div class="form-group">
+        <label>설명 1</label>
+        <input type="text" name="service_desc1">
+      </div>
+      <div class="form-group">
+        <label>비용 1</label>
+        <input type="text" name="service_price1">
+      </div>
+
+      <div class="form-group">
+        <label>서비스 2</label>
+        <input type="text" name="service_name2">
+      </div>
+      <div class="form-group">
+        <label>설명 2</label>
+        <input type="text" name="service_desc2">
+      </div>
+      <div class="form-group">
+        <label>비용 2</label>
+        <input type="text" name="service_price2">
+      </div>
+
+      <div class="form-group">
+        <label>서비스 3</label>
+        <input type="text" name="service_name3">
+      </div>
+      <div class="form-group">
+        <label>설명 3</label>
+        <input type="text" name="service_desc3">
+      </div>
+      <div class="form-group">
+        <label>비용 3</label>
+        <input type="text" name="service_price3">
+      </div>
+    </div>
+
+    <!-- 이미지 -->
+    <div class="form-section-title">대표 이미지</div>
+    {% if business.image_url %}
+      <p class="hint">현재 이미지:</p>
+      <img src="{{ business.image_url }}" style="max-width:200px; border-radius:8px; margin-bottom:8px;">
+    {% endif %}
+    <div class="form-group">
+      <input type="file" name="image" accept="image/*">
+      <p class="hint">이미지를 변경하고 싶을 때만 선택하세요.</p>
+    </div>
+
+    <div style="margin-top:18px; display:flex; gap:10px;">
+      <button type="submit" class="btn-primary">수정 내용 저장</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const sidoSelect = document.getElementById("sido");
+  const sigunguSelect = document.getElementById("sigungu");
+  const dongSelect = document.getElementById("dong");
+
+  async function fetchJSON(url) {
+    const res = await fetch(url);
+    return await res.json();
+  }
+
+  sidoSelect.addEventListener("change", async () => {
+    const sido = sidoSelect.value;
+    sigunguSelect.innerHTML = '<option value="">선택</option>';
+    dongSelect.innerHTML = '<option value="">선택</option>';
+    if (!sido) return;
+    const data = await fetchJSON(`/api/locations/sigungu?sido=${encodeURIComponent(sido)}`);
+    data.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      sigunguSelect.appendChild(opt);
+    });
+  });
+
+  sigunguSelect.addEventListener("change", async () => {
+    const sido = sidoSelect.value;
+    const sigungu = sigunguSelect.value;
+    dongSelect.innerHTML = '<option value="">선택</option>';
+    if (!sido || !sigungu) return;
+    const data = await fetchJSON(`/api/locations/dong?sido=${encodeURIComponent(sido)}&sigungu=${encodeURIComponent(sigungu)}`);
+    data.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      dongSelect.appendChild(opt);
+    });
+  });
+</script>
+{% endblock %}
