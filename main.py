@@ -57,20 +57,19 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 KAKAO_CLIENT_ID = os.getenv("KAKAO_CLIENT_ID")
 redirect_uri = "https://dongnelink.onrender.com/auth/kakao/callback"
 
-
 # ------------------------------------------------------------
-# 관리자 계정 (최초 1개는 코드로 관리, DB에도 is_admin 플래그 사용 가능)
+# 관리자 계정 (최초 1개는 코드로 관리)
 # ------------------------------------------------------------
 ADMIN_USERNAME = "taehwan4381@daum.net"
-ADMIN_PASSWORD = "taehwan4381@"  # 처음 로그인 시 이 계정을 admin으로 만들어도 됨
+ADMIN_PASSWORD = "taehwan4381@"  
 
 # ------------------------------------------------------------
-# In-memory DB (업체/리뷰/게시글)
+# In-memory DB
 # ------------------------------------------------------------
-USERS_LEGACY: list[dict] = []   # 지금은 안 씀
+USERS_LEGACY: list[dict] = []
 BUSINESSES: list[dict] = []
 REVIEWS: list[dict] = []
-NEWS_POSTS: list[dict] = []   # 동네생활 게시판 데이터
+NEWS_POSTS: list[dict] = []
 
 _business_id_seq = 1
 
@@ -90,7 +89,6 @@ def get_db():
 
 
 def get_current_user(request: Request) -> Optional[str]:
-    # 쿠키에 저장된 username 그대로 사용 (템플릿에서 보여줄용)
     return request.cookies.get("user")
 
 
@@ -107,7 +105,6 @@ def admin_required(request: Request) -> str:
     return user
 
 
-# DB에서 유저 찾는 헬퍼
 def get_user_by_username(db: Session, username: str) -> Optional[User]:
     return db.query(User).filter(User.username == username).first()
 
@@ -181,8 +178,6 @@ def home(request: Request, user=Depends(get_current_user)):
             "categories": CATEGORY_META,
         },
     )
-
-
 # =============================================================
 # 동 선택 페이지
 # =============================================================
@@ -220,7 +215,6 @@ def lifestyle_page(
 ):
     validate_location(sido, sigungu, dong)
 
-    # 해당 지역 글만 필터링
     posts = [
         p
         for p in NEWS_POSTS
@@ -264,7 +258,7 @@ def lifestyle_new_page(
     )
 
 
-# 🔥 동네생활 글쓰기 (POST, 이미지 포함)
+# 🔥 동네생활 글쓰기 (POST + 이미지)
 @app.post("/lifestyle/new")
 def lifestyle_new(
     request: Request,
@@ -304,12 +298,13 @@ def lifestyle_new(
     )
 
     return RedirectResponse(
-        f"/lifestyle?sido={sido}&sigungu={sigungu}&dong={dong}", 302
+        f"/lifestyle?sido={sido}&sigungu={sigungu}&dong={dong}",
+        status_code=302,
     )
 
 
 # =============================================================
-# 업소 헬퍼 (BUSINESSES 메모리 그대로 사용)
+# 업소 헬퍼
 # =============================================================
 def ensure_business_defaults(b: dict):
     b.setdefault("phone", None)
@@ -365,7 +360,7 @@ def get_filtered_businesses(kind, sido, sigungu, dong, category=None):
 
 
 # =============================================================
-# 리스트 페이지 (맛집 / 수리)
+# 리스트 페이지 (맛집/수리)
 # =============================================================
 @app.get("/food", response_class=HTMLResponse)
 def food_list(
@@ -405,9 +400,7 @@ def repair_list(
 ):
     validate_location(sido, sigungu, dong)
     items = get_filtered_businesses("repair", sido, sigungu, dong, category)
-    categories = sorted(
-        {b["category"] for b in BUSINESSES if b["kind"] == "repair"}
-    )
+    categories = sorted({b["category"] for b in BUSINESSES if b["kind"] == "repair"})
 
     return templates.TemplateResponse(
         "repair_list.html",
@@ -424,7 +417,7 @@ def repair_list(
 
 
 # =============================================================
-# BUSINESS 등록 (메모리)
+# BUSINESS 등록
 # =============================================================
 @app.get("/business/register", response_class=HTMLResponse)
 def business_register_page(request: Request, user=Depends(get_current_user)):
@@ -435,8 +428,6 @@ def business_register_page(request: Request, user=Depends(get_current_user)):
         "business_form.html",
         {"request": request, "user": user, "sido_list": CAPITAL_SIDO},
     )
-
-
 @app.post("/business/new")
 def business_new(
     request: Request,
@@ -579,7 +570,7 @@ def business_new(
 
 
 # =============================================================
-# BUSINESS 상세 + 리뷰
+# BUSINESS 상세
 # =============================================================
 @app.get("/business/{bid}", response_class=HTMLResponse)
 def business_detail(
@@ -609,6 +600,9 @@ def business_detail(
     )
 
 
+# =============================================================
+# 리뷰
+# =============================================================
 @app.post("/business/{bid}/review")
 def add_review(
     bid: int,
@@ -651,7 +645,7 @@ def my_businesses(request: Request, user=Depends(get_current_user)):
 
 
 # =============================================================
-# BUSINESS 수정 / 삭제
+# BUSINESS 수정
 # =============================================================
 def can_edit(request: Request, b: dict) -> bool:
     u = get_current_user(request)
@@ -809,6 +803,9 @@ def edit_business(
     return RedirectResponse(f"/business/{bid}", 302)
 
 
+# =============================================================
+# BUSINESS 삭제
+# =============================================================
 @app.post("/business/{bid}/delete")
 def delete_business(
     request: Request,
@@ -829,7 +826,7 @@ def delete_business(
 
 
 # =============================================================
-# ADMIN — 승인 시스템 (업체)
+# ADMIN — 승인 시스템
 # =============================================================
 @app.get("/admin/businesses/pending", response_class=HTMLResponse)
 def pending_list(request: Request, admin=Depends(admin_required)):
@@ -857,7 +854,7 @@ def reject_business(bid: int, admin=Depends(admin_required)):
 
 
 # =============================================================
-# 입점비 결제(모의)
+# 입점비 결제 (모의)
 # =============================================================
 @app.post("/business/{bid}/pay-entry")
 def pay_entry(
@@ -880,7 +877,7 @@ def pay_entry(
 
 
 # =============================================================
-# AUTH — 일반 회원가입/로그인 (DB 버전)
+# 일반 회원가입 / 로그인
 # =============================================================
 @app.get("/auth/register", response_class=HTMLResponse)
 def register_page(request: Request):
@@ -895,11 +892,11 @@ def register(
     db: Session = Depends(get_db),
 ):
     if password != password2:
-        return HTMLResponse("비밀번호가 일치하지 않습니다.", status_code=400)
+        return HTMLResponse("비밀번호가 일치하지 않습니다.", 400)
 
     existing = get_user_by_username(db, username)
     if existing:
-        return HTMLResponse("이미 존재하는 아이디입니다.", status_code=400)
+        return HTMLResponse("이미 존재하는 아이디입니다.", 400)
 
     user = User(
         username=username,
@@ -929,9 +926,7 @@ def login(
     password: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    # 관리자 계정 하드코딩 로직 유지 + DB 연동
     if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-        # DB에 admin 유저 없으면 자동 생성
         admin_user = get_user_by_username(db, username)
         if not admin_user:
             admin_user = User(
@@ -950,10 +945,8 @@ def login(
 
     u = get_user_by_username(db, username)
     if not u or u.password_hash != hash_password(password):
-        return HTMLResponse("로그인 실패", status_code=400)
+        return HTMLResponse("로그인 실패", 400)
 
-    # 필요하면 datetime.utcnow() 등으로 갱신 가능
-    # u.last_login = datetime.utcnow()
     db.commit()
 
     res = RedirectResponse("/", 302)
@@ -971,7 +964,7 @@ def logout():
 
 
 # =============================================================
-# AUTH — 카카오 간편로그인 (DB 버전)
+# 카카오 로그인
 # =============================================================
 @app.get("/auth/kakao/login")
 async def kakao_login():
@@ -979,7 +972,6 @@ async def kakao_login():
         "https://kauth.kakao.com/oauth/authorize"
         f"?client_id={KAKAO_CLIENT_ID}"
         f"&redirect_uri={redirect_uri}"
-
         "&response_type=code"
     )
     return RedirectResponse(kakao_auth_url)
@@ -993,18 +985,16 @@ async def kakao_callback(
     db: Session = Depends(get_db),
 ):
     if error:
-        return HTMLResponse(f"카카오 로그인 에러: {error}", status_code=400)
+        return HTMLResponse(f"카카오 로그인 에러: {error}", 400)
 
     if not code:
-        return HTMLResponse("code 파라미터 없음", status_code=400)
+        return HTMLResponse("code 파라미터 없음", 400)
 
-    # 1) code → access_token 교환
     token_url = "https://kauth.kakao.com/oauth/token"
     data = {
         "grant_type": "authorization_code",
         "client_id": KAKAO_CLIENT_ID,
         "redirect_uri": redirect_uri,
-
         "code": code,
     }
 
@@ -1012,14 +1002,13 @@ async def kakao_callback(
         token_res = await client.post(token_url, data=data)
 
     if token_res.status_code != 200:
-        return HTMLResponse(f"토큰 발급 실패: {token_res.text}", status_code=400)
+        return HTMLResponse(f"토큰 발급 실패: {token_res.text}", 400)
 
     token_json = token_res.json()
     access_token = token_json.get("access_token")
     if not access_token:
-        return HTMLResponse(f"토큰 발급 실패: {token_json}", status_code=400)
+        return HTMLResponse(f"토큰 발급 실패: {token_json}", 400)
 
-    # 2) access_token → 유저 정보
     async with httpx.AsyncClient() as client:
         user_res = await client.get(
             "https://kapi.kakao.com/v2/user/me",
@@ -1027,7 +1016,7 @@ async def kakao_callback(
         )
 
     if user_res.status_code != 200:
-        return HTMLResponse(f"유저 정보 실패: {user_res.text}", status_code=400)
+        return HTMLResponse(f"유저 정보 실패: {user_res.text}", 400)
 
     user_json = user_res.json()
     kakao_id = str(user_json.get("id"))
@@ -1037,15 +1026,12 @@ async def kakao_callback(
     email = account.get("email")
     nickname = profile.get("nickname") or "카카오사용자"
 
-    # DB에서 kakao_id로 유저 찾기
     user = get_user_by_kakao_id(db, kakao_id)
 
     if not user:
-        # 없으면 새로 가입
         base_username = f"kakao_{kakao_id}"
         username = base_username
 
-        # 혹시 중복 있으면 숫자 붙여주기
         n = 1
         while get_user_by_username(db, username):
             username = f"{base_username}_{n}"
@@ -1061,7 +1047,6 @@ async def kakao_callback(
         db.commit()
         db.refresh(user)
 
-    # 로그인 처리
     res = RedirectResponse("/", 302)
     res.set_cookie("user", user.username)
     res.delete_cookie("is_admin")
@@ -1069,7 +1054,7 @@ async def kakao_callback(
 
 
 # =============================================================
-# ADMIN 대시보드
+# ADMIN 메인
 # =============================================================
 @app.get("/admin", response_class=HTMLResponse)
 def admin_home(
@@ -1102,3 +1087,5 @@ def manifest():
 @app.get("/static/service-worker.js")
 def sw():
     return FileResponse(STATIC_DIR / "service-worker.js")
+
+
