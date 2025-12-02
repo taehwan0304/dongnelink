@@ -978,7 +978,8 @@ async def kakao_login():
     kakao_auth_url = (
         "https://kauth.kakao.com/oauth/authorize"
         f"?client_id={KAKAO_CLIENT_ID}"
-        f"&redirect_uri={KAKAO_REDIRECT_URI}"
+        f"&redirect_uri={redirect_uri}"
+
         "&response_type=code"
     )
     return RedirectResponse(kakao_auth_url)
