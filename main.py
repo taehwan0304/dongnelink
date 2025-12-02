@@ -1003,7 +1003,8 @@ async def kakao_callback(
     data = {
         "grant_type": "authorization_code",
         "client_id": KAKAO_CLIENT_ID,
-        "redirect_uri": KAKAO_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
+
         "code": code,
     }
 
