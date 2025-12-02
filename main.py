@@ -56,6 +56,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # ------------------------------------------------------------
 KAKAO_CLIENT_ID = os.getenv("KAKAO_CLIENT_ID")
 redirect_uri = "https://dongnelink.onrender.com/auth/kakao/callback"
+print(">>> KAKAO_CLIENT_ID:", KAKAO_CLIENT_ID)
 
 # ------------------------------------------------------------
 # 관리자 계정 (최초 1개는 코드로 관리)
