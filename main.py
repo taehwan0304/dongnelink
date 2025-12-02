@@ -55,7 +55,8 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # 🔐 카카오 REST API 키 (client_id)
 # ------------------------------------------------------------
 KAKAO_CLIENT_ID = os.getenv("KAKAO_CLIENT_ID")
-KAKAO_REDIRECT_URI = "http://localhost:8000/auth/kakao/callback"
+redirect_uri = "https://dongnelink.onrender.com/auth/kakao/callback"
+
 
 # ------------------------------------------------------------
 # 관리자 계정 (최초 1개는 코드로 관리, DB에도 is_admin 플래그 사용 가능)
